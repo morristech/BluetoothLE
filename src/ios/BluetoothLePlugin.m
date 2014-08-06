@@ -70,6 +70,64 @@ NSString *const errorService = @"service";
 NSString *const errorCharacteristic = @"characteristic";
 NSString *const errorDescriptor = @"descriptor";
 
+
+
+
+//Codes
+NSString *const codeSuccess = @"100";
+NSString *const codeErrorInitialize = @"101";
+NSString *const codeErrorEnable = @"102";
+NSString *const codeErrorArguments = @"103";
+NSString *const codeErrorStartScan = @"104";
+NSString *const codeErrorStopScan = @"105";
+NSString *const codeErrorConnect = @"106";
+NSString *const codeErrorReconnect = @"107";
+NSString *const codeErrorDiscoverServices = @"108";
+NSString *const codeErrorDiscoverCharacteristics = @"109";
+NSString *const codeErrorDiscoverDescriptors = @"110";
+NSString *const codeErrorRead = @"111";
+NSString *const codeErrorSubscription = @"112";
+NSString *const codeErrorWrite = @"113";
+NSString *const codeErrorReadDescriptor = @"114";
+NSString *const codeErrorWriteDescriptor = @"115";
+NSString *const codeErrorRssi = @"116";
+NSString *const codeErrorNeverConnected = @"117";
+NSString *const codeErrorIsNotDisconnected = @"118";
+NSString *const codeErrorIsNotConnected = @"119";
+NSString *const codeErrorIsDisconnected = @"120";
+NSString *const codeErrorService = @"121";
+NSString *const codeErrorCharacteristic = @"122";
+NSString *const codeErrorDescriptor = @"123";
+//Init Error Codes
+NSString *const codePoweredOff = @"201";
+NSString *const codeUnauthorized = @"202";
+NSString *const codeUnknown = @"203";
+NSString *const codeResetting = @"204";
+NSString *const codeUnsupported = @"205";
+NSString *const codeNotInit = @"206";
+NSString *const codeNotEnabled = @"207";
+NSString *const codeAlreadyInit = @"208";
+//Scanning Error Codes
+NSString *const codeAlreadyScanning = @"300";
+NSString *const codeNotScanning = @"301";
+//Connection Error Codes
+NSString *const codePreviouslyConnected = @"400";
+NSString *const codeNeverConnected = @"401";
+NSString *const codeIsNotConnected = @"402";
+NSString *const codeIsNotDisconnected = @"403";
+NSString *const codeIsDisconnected = @"404";
+NSString *const codeNoAddress = @"405";
+NSString *const codeNoDevice = @"406";
+//Read/write
+NSString *const codeNoArgObj = @"500";
+NSString *const codeNoService = @"501";
+NSString *const codeNoCharacteristic = @"502";
+NSString *const codeNoDescriptor = @"503";
+NSString *const codeWriteValueNotFound = @"504";
+NSString *const codeWriteDescriptorValueNotFound = @"505";
+
+
+
 //Error Messages
 //Initialization
 NSString *const logPoweredOff = @"Bluetooth powered off";
@@ -140,7 +198,7 @@ NSString *const operationWrite = @"write";
     //Ensure scan isn't already running
     if (scanCallback != nil)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorStartScan, keyError, logAlreadyScanning, keyMessage, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeAlreadyScanning, keyCode, errorStartScan, keyError, logAlreadyScanning, keyMessage, nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
         [pluginResult setKeepCallbackAsBool:false];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -160,7 +218,7 @@ NSString *const operationWrite = @"write";
     scanCallback = command.callbackId;
     
     //Send scan started status
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, statusScanStarted, keyStatus, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, statusScanStarted, keyStatus, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:true];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:scanCallback];
@@ -180,7 +238,7 @@ NSString *const operationWrite = @"write";
     //Ensure scan is running
     if (scanCallback == nil)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorStartScan, keyError, logNotScanning, keyMessage, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeNotScanning, keyCode, errorStartScan, keyError, logNotScanning, keyMessage, nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
         [pluginResult setKeepCallbackAsBool:false];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -191,7 +249,7 @@ NSString *const operationWrite = @"write";
     
     [centralManager stopScan];
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, statusScanStopped, keyStatus, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, statusScanStopped, keyStatus, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -207,7 +265,7 @@ NSString *const operationWrite = @"write";
     
     if (activePeripheral != nil)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorConnect, keyError, logPreviouslyConnected, keyMessage, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codePreviouslyConnected, keyCode, errorConnect, keyError, logPreviouslyConnected, keyMessage, nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
         [pluginResult setKeepCallbackAsBool:false];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -225,7 +283,7 @@ NSString *const operationWrite = @"write";
     
     if (address == nil)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorConnect, keyError, logNoAddress, keyMessage, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeNoAddress, keyCode, errorConnect, keyError, logNoAddress, keyMessage, nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
         [pluginResult setKeepCallbackAsBool:false];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -236,7 +294,7 @@ NSString *const operationWrite = @"write";
     
     if (peripherals.count == 0)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorConnect, keyError, logNoDevice, keyMessage, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeNoDevice, keyCode, errorConnect, keyError, logNoDevice, keyMessage, nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
         [pluginResult setKeepCallbackAsBool:false];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -250,7 +308,7 @@ NSString *const operationWrite = @"write";
     
     connectCallback = command.callbackId;
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, statusConnecting, keyStatus, name, keyName, [activePeripheral.identifier UUIDString], keyAddress, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, statusConnecting, keyStatus, name, keyName, [activePeripheral.identifier UUIDString], keyAddress, nil];
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:true];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:connectCallback];
@@ -280,7 +338,7 @@ NSString *const operationWrite = @"write";
     
     NSObject* name = [self formatName:activePeripheral.name];
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, statusConnecting, keyStatus, name, keyName, [activePeripheral.identifier UUIDString], keyAddress, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, statusConnecting, keyStatus, name, keyName, [activePeripheral.identifier UUIDString], keyAddress, nil];
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:true];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:connectCallback];
@@ -310,7 +368,7 @@ NSString *const operationWrite = @"write";
     
     if (activePeripheral.state == CBPeripheralStateConnecting)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, statusDisconnecting, keyStatus, name, keyName, [activePeripheral.identifier UUIDString], keyAddress, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, statusDisconnecting, keyStatus, name, keyName, [activePeripheral.identifier UUIDString], keyAddress, nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
         [pluginResult setKeepCallbackAsBool:false];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -321,7 +379,7 @@ NSString *const operationWrite = @"write";
     {
         connectCallback = command.callbackId;
         
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, statusDisconnecting, keyStatus, name, keyName, [activePeripheral.identifier UUIDString], keyAddress, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, statusDisconnecting, keyStatus, name, keyName, [activePeripheral.identifier UUIDString], keyAddress, nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
         [pluginResult setKeepCallbackAsBool:true];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:connectCallback];
@@ -351,7 +409,7 @@ NSString *const operationWrite = @"write";
     NSObject* name = [self formatName:activePeripheral.name];
     
     //Create dictionary with status message and optionally add device information
-    NSMutableDictionary* returnObj = [NSMutableDictionary dictionaryWithObjectsAndKeys: statusClosed, keyStatus, name, keyName, [activePeripheral.identifier UUIDString], keyAddress, nil];
+    NSMutableDictionary* returnObj = [NSMutableDictionary dictionaryWithObjectsAndKeys:  codeSuccess, keyCode, statusClosed, keyStatus, name, keyName, [activePeripheral.identifier UUIDString], keyAddress, nil];
     
     activePeripheral = nil;
     connectCallback = nil;
@@ -664,7 +722,7 @@ NSString *const operationWrite = @"write";
     
     if (value == nil)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorWrite, keyError, logWriteValueNotFound, keyMessage, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeWriteValueNotFound, keyCode, errorWrite, keyError, logWriteValueNotFound, keyMessage, nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
         [pluginResult setKeepCallbackAsBool:false];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -777,7 +835,7 @@ NSString *const operationWrite = @"write";
     
     if (value == nil)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorWriteDescriptor, keyError, logWriteDescriptorValueNotFound, keyMessage, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeWriteDescriptorValueNotFound, keyCode, errorWriteDescriptor, keyError, logWriteDescriptorValueNotFound, keyMessage, nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
         [pluginResult setKeepCallbackAsBool:false];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -815,7 +873,7 @@ NSString *const operationWrite = @"write";
 {
     NSNumber* result = [NSNumber numberWithBool:(centralManager != nil)];
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, result, keyIsInitialized, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, result, keyIsInitialized, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -825,7 +883,7 @@ NSString *const operationWrite = @"write";
 {
     NSNumber* result = [NSNumber numberWithBool:(centralManager != nil && centralManager.state == CBCentralManagerStatePoweredOn)];
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, result, keyIsEnabled, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, result, keyIsEnabled, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -835,7 +893,7 @@ NSString *const operationWrite = @"write";
 {
     NSNumber* result = [NSNumber numberWithBool:(scanCallback != nil)];
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, result, keyIsScanning, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, result, keyIsScanning, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -845,7 +903,7 @@ NSString *const operationWrite = @"write";
 {
     NSNumber* result = [NSNumber numberWithBool:(activePeripheral != nil && activePeripheral.state == CBPeripheralStateConnected)];
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, result, keyIsConnected, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, result, keyIsConnected, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -855,7 +913,7 @@ NSString *const operationWrite = @"write";
 {
     NSNumber* result = [NSNumber numberWithBool:(false)];
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, result, keyIsDiscovered, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, result, keyIsDiscovered, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -872,35 +930,41 @@ NSString *const operationWrite = @"write";
     
     //Decide on error message
     NSString* error = nil;
+    NSString* errorCode = nil;
     switch ([centralManager state])
     {
         case CBCentralManagerStatePoweredOff:
         {
             error = logPoweredOff;
+            errorCode = codePoweredOff;
             break;
         }
             
         case CBCentralManagerStateUnauthorized:
         {
             error = logUnauthorized;
+            errorCode = codeUnauthorized;
             break;
         }
             
         case CBCentralManagerStateUnknown:
         {
             error = logUnknown;
+            errorCode = codeUnknown;
             break;
         }
             
         case CBCentralManagerStateResetting:
         {
             error = logResetting;
+            errorCode = codeResetting;
             break;
         }
             
         case CBCentralManagerStateUnsupported:
         {
             error = logUnsupported;
+            errorCode = codeUnsupported;
             break;
         }
             
@@ -916,7 +980,7 @@ NSString *const operationWrite = @"write";
     
     if (error != nil)
     {
-        returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorEnable, keyError, error, keyMessage, nil];
+        returnObj = [NSDictionary dictionaryWithObjectsAndKeys: errorCode, keyCode, errorEnable, keyError, error, keyMessage, nil];
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
         
         //Clear out the callbacks cause user will need to connect again after Bluetooth is back on
@@ -927,7 +991,7 @@ NSString *const operationWrite = @"write";
     }
     else
     {
-        returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"100", keyCode, statusEnabled, keyStatus, nil];
+        returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, statusEnabled, keyStatus, nil];
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     }
     
@@ -949,7 +1013,7 @@ NSString *const operationWrite = @"write";
     NSObject* name = [self formatName:peripheral.name];
     NSData* data = [advertisementData valueForKey:CBAdvertisementDataManufacturerDataKey];
     NSString* dataString = [data base64EncodedStringWithOptions:0];
-    NSMutableDictionary* returnObj = [NSMutableDictionary dictionaryWithObjectsAndKeys: statusScanResult, keyStatus, name, keyName, peripheral.identifier.UUIDString, keyAddress, RSSI, keyRssi, dataString, keyAdvertisement, nil];
+    NSMutableDictionary* returnObj = [NSMutableDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, statusScanResult, keyStatus, name, keyName, peripheral.identifier.UUIDString, keyAddress, RSSI, keyRssi, dataString, keyAdvertisement, nil];
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:true];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:scanCallback];
@@ -967,7 +1031,7 @@ NSString *const operationWrite = @"write";
     
     NSObject* name = [self formatName:peripheral.name];
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, statusConnected, keyStatus, name, keyName, [peripheral.identifier UUIDString], keyAddress, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, statusConnected, keyStatus, name, keyName, [peripheral.identifier UUIDString], keyAddress, nil];
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     //Keep in case device gets disconnected without user initiation
     [pluginResult setKeepCallbackAsBool:true];
@@ -981,7 +1045,7 @@ NSString *const operationWrite = @"write";
         return;
     }
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorConnect, keyError, error.description, keyMessage, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeErrorConnect, keyCode, errorConnect, keyError, error.description, keyMessage, nil];
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:connectCallback];
@@ -1000,7 +1064,7 @@ NSString *const operationWrite = @"write";
     
     NSObject* name = [self formatName:peripheral.name];
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, statusDisconnected, keyStatus, name, keyName, [peripheral.identifier UUIDString], keyAddress, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, statusDisconnected, keyStatus, name, keyName, [peripheral.identifier UUIDString], keyAddress, nil];
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:connectCallback];
@@ -1020,7 +1084,7 @@ NSString *const operationWrite = @"write";
     
     if (error != nil)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorDiscoverServices, keyError, name, keyName, [peripheral.identifier UUIDString], keyAddress, error.description, keyMessage, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeErrorDiscoverServices, keyCode, errorDiscoverServices, keyError, name, keyName, [peripheral.identifier UUIDString], keyAddress, error.description, keyMessage, nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
         [pluginResult setKeepCallbackAsBool:false];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:discoverCallback];
@@ -1036,7 +1100,7 @@ NSString *const operationWrite = @"write";
     }
     
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, statusDiscoveredServices, keyStatus, name, keyName, [peripheral.identifier UUIDString], keyAddress, services, keyServiceUuids, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, statusDiscoveredServices, keyStatus, name, keyName, [peripheral.identifier UUIDString], keyAddress, services, keyServiceUuids, nil];
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:discoverCallback];
@@ -1055,7 +1119,7 @@ NSString *const operationWrite = @"write";
     
     if (error != nil)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorDiscoverCharacteristics, keyError, name, keyName, [peripheral.identifier UUIDString], keyAddress, error.description, keyMessage, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeErrorDiscoverCharacteristics, keyCode, errorDiscoverCharacteristics, keyError, name, keyName, [peripheral.identifier UUIDString], keyAddress, error.description, keyMessage, nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
         [pluginResult setKeepCallbackAsBool:false];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:discoverCallback];
@@ -1071,7 +1135,7 @@ NSString *const operationWrite = @"write";
     }
     
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, statusDiscoveredCharacteristics, keyStatus, name, keyName, [peripheral.identifier UUIDString], keyAddress, characteristics, keyCharacteristicUuids, [service.UUID representativeString], keyServiceUuid, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, statusDiscoveredCharacteristics, keyStatus, name, keyName, [peripheral.identifier UUIDString], keyAddress, characteristics, keyCharacteristicUuids, [service.UUID representativeString], keyServiceUuid, nil];
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:discoverCallback];
@@ -1090,7 +1154,7 @@ NSString *const operationWrite = @"write";
     
     if (error != nil)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorDiscoverDescriptors, keyError, name, keyName, [peripheral.identifier UUIDString], keyAddress, error.description, keyMessage, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeErrorDiscoverDescriptors, keyCode, errorDiscoverDescriptors, keyError, name, keyName, [peripheral.identifier UUIDString], keyAddress, error.description, keyMessage, nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
         [pluginResult setKeepCallbackAsBool:false];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:discoverCallback];
@@ -1106,7 +1170,7 @@ NSString *const operationWrite = @"write";
     }
     
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, statusDiscoveredDescriptors, keyStatus, name, keyName, [peripheral.identifier UUIDString], keyAddress, descriptors, keyDescriptorUuids, [characteristic.UUID representativeString], keyCharacteristicUuid, [characteristic.service.UUID representativeString], keyServiceUuid, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, statusDiscoveredDescriptors, keyStatus, name, keyName, [peripheral.identifier UUIDString], keyAddress, descriptors, keyDescriptorUuids, [characteristic.UUID representativeString], keyCharacteristicUuid, [characteristic.service.UUID representativeString], keyServiceUuid, nil];
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:discoverCallback];
@@ -1360,7 +1424,7 @@ NSString *const operationWrite = @"write";
     
     if (error != nil)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorRssi, keyError, error.description, keyMessage, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeErrorRssi, keyCode, errorRssi, keyError, error.description, keyMessage, nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
         [pluginResult setKeepCallbackAsBool:false];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:rssiCallback];
@@ -1368,7 +1432,7 @@ NSString *const operationWrite = @"write";
         return;
     }
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, peripheral.RSSI, keyRssi, statusRssi, keyStatus, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeSuccess, keyCode, peripheral.RSSI, keyRssi, statusRssi, keyStatus, nil];
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:rssiCallback];
@@ -1436,7 +1500,7 @@ NSString *const operationWrite = @"write";
 {
     if (centralManager == nil)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorInitialize, keyError, logNotInit, keyMessage, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeErrorInitialize, keyCode, errorInitialize, keyError, logNotInit, keyMessage, nil];
         
         CDVPluginResult *pluginResult = nil;
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
@@ -1453,7 +1517,7 @@ NSString *const operationWrite = @"write";
 {
     if (centralManager.state != CBCentralManagerStatePoweredOn)
     {
-        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorEnable, keyError, logNotEnabled, keyMessage, nil];
+        NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeNotEnabled, keyCode, errorEnable, keyError, logNotEnabled, keyMessage, nil];
         
         CDVPluginResult *pluginResult = nil;
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
@@ -1473,7 +1537,7 @@ NSString *const operationWrite = @"write";
         return false;
     }
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorArguments, keyError, logNoArgObj, keyMessage, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeNoArgObj, keyCode, errorArguments, keyError, logNoArgObj, keyMessage, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -1488,7 +1552,7 @@ NSString *const operationWrite = @"write";
         return false;
     }
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorService, keyError, logNoService, keyMessage, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeNoService, keyCode, errorService, keyError, logNoService, keyMessage, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -1503,7 +1567,7 @@ NSString *const operationWrite = @"write";
         return false;
     }
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorCharacteristic, keyError, logNoCharacteristic, keyMessage, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeNoCharacteristic, keyCode, errorCharacteristic, keyError, logNoCharacteristic, keyMessage, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -1518,7 +1582,7 @@ NSString *const operationWrite = @"write";
         return false;
     }
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorDescriptor, keyError, logNoDescriptor, keyMessage, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeNoDescriptor, keyCode, errorDescriptor, keyError, logNoDescriptor, keyMessage, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -1533,7 +1597,7 @@ NSString *const operationWrite = @"write";
         return false;
     }
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorNeverConnected, keyError, logNeverConnected, keyMessage, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeNeverConnected, keyCode, errorNeverConnected, keyError, logNeverConnected, keyMessage, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -1548,7 +1612,7 @@ NSString *const operationWrite = @"write";
         return false;
     }
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorIsNotDisconnected, keyError, logIsNotDisconnected, keyMessage, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeIsNotDisconnected, keyCode, errorIsNotDisconnected, keyError, logIsNotDisconnected, keyMessage, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -1563,7 +1627,7 @@ NSString *const operationWrite = @"write";
         return false;
     }
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorIsDisconnected, keyError, logIsDisconnected, keyMessage, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeIsDisconnected, keyCode, errorIsDisconnected, keyError, logIsDisconnected, keyMessage, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -1578,7 +1642,7 @@ NSString *const operationWrite = @"write";
         return false;
     }
     
-    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: @"1", keyCode, errorIsNotConnected, keyError, logIsNotConnected, keyMessage, nil];
+    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: codeIsNotConnected, keyCode, errorIsNotConnected, keyError, logIsNotConnected, keyMessage, nil];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:false];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
