@@ -84,6 +84,7 @@ public class BluetoothLePlugin extends CordovaPlugin
   //Object keys
   private final String keyStatus = "status";
   private final String keyError = "error";
+  private final String keyCode = "code";
   private final String keyMessage = "message";
   private final String keyRequest = "request";
   private final String keyName = "name";
@@ -351,7 +352,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     //If it's already enabled, 
     if (bluetoothAdapter.isEnabled())
     {
-    	addProperty(returnObj, keyStatus, statusEnabled);
+    	addProperty(returnObj, keyCode, "100");
+      addProperty(returnObj, keyStatus, statusEnabled);
     	PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, returnObj);
       pluginResult.setKeepCallback(true);
       initCallbackContext.sendPluginResult(pluginResult);
@@ -376,7 +378,8 @@ public class BluetoothLePlugin extends CordovaPlugin
   	//No request, so send back not enabled
   	else
   	{
-  		addProperty(returnObj, keyError, errorEnable);
+  		addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorEnable);
     	addProperty(returnObj, keyMessage, logNotEnabled);
     	PluginResult pluginResult = new PluginResult(PluginResult.Status.ERROR, returnObj);
       pluginResult.setKeepCallback(true);
@@ -396,7 +399,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     //If the adapter is already scanning, don't call another scan.
     if (scanCallbackContext != null)
     {
-    	addProperty(returnObj, keyError, errorStartScan);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorStartScan);
     	addProperty(returnObj, keyMessage, logAlreadyScanning);
       callbackContext.error(returnObj);
       return;
@@ -429,7 +433,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     //If the scan didn't start...
     if (!result)
     {
-    	addProperty(returnObj, keyError, errorStartScan);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorStartScan);
     	addProperty(returnObj, keyMessage, logScanStartFail);
       callbackContext.error(returnObj);
       scanCallbackContext = null;
@@ -437,6 +442,7 @@ public class BluetoothLePlugin extends CordovaPlugin
     }
     
     //Notify user of started scan and save callback
+    addProperty(returnObj, keyCode, "1");
     addProperty(returnObj, keyStatus, statusScanStarted);
     
     PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, returnObj);
@@ -456,7 +462,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     //Check if already scanning
     if (scanCallbackContext == null)
     {
-    	addProperty(returnObj, keyError, errorStopScan);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorStopScan);
     	addProperty(returnObj, keyMessage, logNotScanning);
       callbackContext.error(returnObj);
       return;
@@ -469,6 +476,7 @@ public class BluetoothLePlugin extends CordovaPlugin
     scanCallbackContext = null;
 
     //Inform user
+    addProperty(returnObj, keyCode, "1");
     addProperty(returnObj, keyStatus, statusScanStopped);
     callbackContext.success(returnObj);
   }
@@ -484,6 +492,7 @@ public class BluetoothLePlugin extends CordovaPlugin
     
     if (bluetoothGatt != null)
     {
+      addProperty(returnObj, keyCode, "1");
       addProperty(returnObj, keyError, errorConnect);
       addProperty(returnObj, keyMessage, logPreviouslyConnected);
       callbackContext.error(returnObj);
@@ -503,7 +512,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     
     if (address == null)
     {
-    	addProperty(returnObj, keyError, errorConnect);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorConnect);
     	addProperty(returnObj, keyMessage, logNoAddress);
       callbackContext.error(returnObj);
       return;
@@ -515,7 +525,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     //If device wasn't found...
     if (device == null)
     {
-    	addProperty(returnObj, keyError, errorConnect);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorConnect);
     	addProperty(returnObj, keyMessage, logNoDevice);
       callbackContext.error(returnObj);
       return;
@@ -527,6 +538,7 @@ public class BluetoothLePlugin extends CordovaPlugin
     bluetoothGatt = device.connectGatt(cordova.getActivity().getApplicationContext(), false, gattCallback);
 
     //Return connecting status
+    addProperty(returnObj, keyCode, "1");
     addProperty(returnObj, keyStatus, statusConnecting);
     addProperty(returnObj, keyName, device.getName());
     addProperty(returnObj, keyAddress, device.getAddress());
@@ -562,7 +574,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     
     if (!result)
     {
-    	addProperty(returnObj, keyError, errorReconnect);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorReconnect);
     	addProperty(returnObj, keyMessage, logReconnectFail);
       callbackContext.error(returnObj);
       connectCallbackContext = null;
@@ -574,6 +587,7 @@ public class BluetoothLePlugin extends CordovaPlugin
     BluetoothDevice device = bluetoothGatt.getDevice();
     
     //Return connecting status and keep callback
+    addProperty(returnObj, keyCode, "1");
     addProperty(returnObj, keyStatus, statusConnecting);
     addProperty(returnObj, keyName, device.getName());
     addProperty(returnObj, keyAddress, device.getAddress());
@@ -611,7 +625,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     //If it's connecting, cancel attempt and return disconnect
     if (connectionState == BluetoothProfile.STATE_CONNECTING)
     {
-    	addProperty(returnObj, keyStatus, statusDisconnected);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyStatus, statusDisconnected);
     	connectionState = BluetoothProfile.STATE_DISCONNECTED;
     	
       PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, returnObj);
@@ -621,6 +636,7 @@ public class BluetoothLePlugin extends CordovaPlugin
     //Very unlikely that this is DISCONNECTING
     else
     {
+      addProperty(returnObj, keyCode, "1");
       addProperty(returnObj, keyStatus, statusDisconnecting);
       connectionState = BluetoothProfile.STATE_DISCONNECTING;
       
@@ -656,6 +672,7 @@ public class BluetoothLePlugin extends CordovaPlugin
     
     BluetoothDevice device = bluetoothGatt.getDevice();
     
+    addProperty(returnObj, keyCode, "1");
     addProperty(returnObj, keyStatus, statusClosed);
     addProperty(returnObj, keyAddress, device.getAddress());
     addProperty(returnObj, keyName, device.getName());
@@ -694,7 +711,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     //Already initiated discovery
     if (discoveredState == STATE_DISCOVERING)
     {
-    	addProperty(returnObj, keyError, errorDiscover);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorDiscover);
     	addProperty(returnObj, keyMessage, logAlreadyDiscovering);
       callbackContext.error(returnObj);
       return;
@@ -762,7 +780,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     	JSONObject returnObj = new JSONObject();
     	addProperty(returnObj, keyServiceUuid, formatUuid(service.getUuid()));
     	addProperty(returnObj, keyCharacteristicUuid, formatUuid(characteristicUuid));
-    	addProperty(returnObj, keyError, errorRead);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorRead);
     	addProperty(returnObj, keyMessage, logReadFail);
       callbackContext.error(returnObj);
       RemoveCallback(characteristicUuid, operationRead);
@@ -828,7 +847,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     
     if (!result)
     {
-    	addProperty(returnObj, keyError, errorSubscription);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorSubscription);
     	addProperty(returnObj, keyMessage, logSubscribeFail);
       callbackContext.error(returnObj);
       return;
@@ -850,7 +870,8 @@ public class BluetoothLePlugin extends CordovaPlugin
   		//Clean up
   		bluetoothGatt.setCharacteristicNotification(characteristic, false);
   		
-  		addProperty(returnObj, keyError, errorWriteDescriptor);
+  		addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorWriteDescriptor);
   		addProperty(returnObj, keyMessage, logWriteDescriptorValueNotSet);
   		callbackContext.error(returnObj);
   		return;
@@ -866,7 +887,8 @@ public class BluetoothLePlugin extends CordovaPlugin
   		//Clean up
   		bluetoothGatt.setCharacteristicNotification(characteristic, false);
 
-  		addProperty(returnObj, keyError, errorWriteDescriptor);
+  		addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorWriteDescriptor);
   		addProperty(returnObj, keyMessage, logWriteDescriptorFail);
   		callbackContext.error(returnObj);
   		RemoveCallback(characteristicUuid, operationSubscribe);
@@ -930,7 +952,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     
     if (!result)
     {
-    	addProperty(returnObj, keyError, errorSubscription);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorSubscription);
     	addProperty(returnObj, keyMessage, logUnsubscribeFail);
       callbackContext.error(returnObj);
       return;
@@ -941,7 +964,8 @@ public class BluetoothLePlugin extends CordovaPlugin
       
   	if (!result)
   	{
-  		addProperty(returnObj, keyError, errorWriteDescriptor);
+  		addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorWriteDescriptor);
   		addProperty(returnObj, keyMessage, logWriteDescriptorValueNotSet);
   		callbackContext.error(returnObj);
   		return;
@@ -954,7 +978,8 @@ public class BluetoothLePlugin extends CordovaPlugin
   	
   	if (!result)
   	{
-  		addProperty(returnObj, keyError, errorWriteDescriptor);
+  		addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorWriteDescriptor);
   		addProperty(returnObj, keyMessage, logWriteDescriptorFail);
   		callbackContext.error(returnObj);
   		RemoveCallback(characteristicUuid, operationUnsubscribe);
@@ -1009,7 +1034,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     
     if (value == null)
     {
-    	addProperty(returnObj, keyError, errorWrite);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorWrite);
     	addProperty(returnObj, keyMessage, logWriteValueNotFound);
       callbackContext.error(returnObj);
       return;
@@ -1019,7 +1045,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     
     if (!result)
     {
-    	addProperty(returnObj, keyError, errorWrite);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorWrite);
     	addProperty(returnObj, keyMessage, logWriteValueNotSet);
       callbackContext.error(returnObj);
       return;
@@ -1031,7 +1058,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     
     if (!result)
     {
-    	addProperty(returnObj, keyError, errorWrite);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorWrite);
     	addProperty(returnObj, keyMessage, logWriteFail);
       callbackContext.error(returnObj);
       RemoveCallback(characteristicUuid, operationWrite);
@@ -1093,7 +1121,8 @@ public class BluetoothLePlugin extends CordovaPlugin
       addProperty(returnObj, keyServiceUuid, formatUuid(service.getUuid()));
       addProperty(returnObj, keyCharacteristicUuid, formatUuid(characteristic.getUuid()));
       addProperty(returnObj, keyDescriptorUuid, formatUuid(descriptor.getUuid()));
-    	addProperty(returnObj, keyError, errorReadDescriptor);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorReadDescriptor);
     	addProperty(returnObj, keyMessage, logReadDescriptorFail);
       callbackContext.error(returnObj);
       descriptorCallbackContext = null;
@@ -1155,7 +1184,8 @@ public class BluetoothLePlugin extends CordovaPlugin
   	//Let subscribe/unsubscribe take care of it
     if (descriptor.getUuid().equals(clientConfigurationDescriptorUuid))
     {
-    	addProperty(returnObj, keyError, errorWriteDescriptor);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorWriteDescriptor);
     	addProperty(returnObj, keyMessage, logWriteDescriptorNotAllowed);
     	callbackContext.error(returnObj);
     	return;
@@ -1165,7 +1195,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     
     if (value == null)
     {
-    	addProperty(returnObj, keyError, errorWriteDescriptor);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorWriteDescriptor);
     	addProperty(returnObj, keyMessage, logWriteDescriptorValueNotFound);
       callbackContext.error(returnObj);
       return;
@@ -1175,7 +1206,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     
     if (!result)
     {
-    	addProperty(returnObj, keyError, errorWriteDescriptor);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorWriteDescriptor);
     	addProperty(returnObj, keyMessage, logWriteDescriptorValueNotSet);
       callbackContext.error(returnObj);
       return;
@@ -1187,7 +1219,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     
     if (!result)
     {
-    	addProperty(returnObj, keyError, errorWriteDescriptor);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorWriteDescriptor);
     	addProperty(returnObj, keyMessage, logWriteDescriptorFail);
       callbackContext.error(returnObj);
       descriptorCallbackContext = null;
@@ -1219,7 +1252,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     if (!result)
     {
       JSONObject returnObj = new JSONObject();
-    	addProperty(returnObj, keyError, errorRssi);
+    	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorRssi);
     	addProperty(returnObj, keyMessage, logRssiFail);
       callbackContext.error(returnObj);
       rssiCallbackContext = null;
@@ -1305,7 +1339,8 @@ public class BluetoothLePlugin extends CordovaPlugin
 					//case BluetoothAdapter.STATE_TURNING_OFF:
 					//case BluetoothAdapter.STATE_TURNING_ON:
 						
-						addProperty(returnObj, keyError, errorEnable);
+						addProperty(returnObj, keyCode, "1");
+            addProperty(returnObj, keyError, errorEnable);
 						addProperty(returnObj, keyMessage, logNotEnabled);
 						
 						scanCallbackContext = null;
@@ -1320,7 +1355,8 @@ public class BluetoothLePlugin extends CordovaPlugin
 			      break;
 					case BluetoothAdapter.STATE_ON:
 						
-						addProperty(returnObj, keyStatus, statusEnabled);
+						addProperty(returnObj, keyCode, "100");
+            addProperty(returnObj, keyStatus, statusEnabled);
 						
 						pluginResult = new PluginResult(PluginResult.Status.OK, returnObj);
 			      pluginResult.setKeepCallback(true);
@@ -1348,7 +1384,8 @@ public class BluetoothLePlugin extends CordovaPlugin
 			if (!bluetoothAdapter.isEnabled())
 			{
 				JSONObject returnObj = new JSONObject();
-				addProperty(returnObj, keyError, errorEnable);
+				addProperty(returnObj, keyCode, "1");
+        addProperty(returnObj, keyError, errorEnable);
 		  	addProperty(returnObj, keyMessage, logNotEnabled);
 		  	
 		  	PluginResult pluginResult = new PluginResult(PluginResult.Status.ERROR, returnObj);
@@ -1375,6 +1412,7 @@ public class BluetoothLePlugin extends CordovaPlugin
       addProperty(returnObj, keyAddress, device.getAddress());
       addProperty(returnObj, keyRssi, rssi);
       addPropertyBytes(returnObj, keyAdvertisement, scanRecord);
+      addProperty(returnObj, keyCode, "1");
       addProperty(returnObj, keyStatus, statusScanResult);
       
       PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, returnObj);
@@ -1408,7 +1446,8 @@ public class BluetoothLePlugin extends CordovaPlugin
 
 	      //Create json object with address, name and connection status
 	      JSONObject returnObj = new JSONObject();
-	      addProperty(returnObj, keyStatus, statusConnected);
+	      addProperty(returnObj, keyCode, "1");
+        addProperty(returnObj, keyStatus, statusConnected);
 	      addProperty(returnObj, keyAddress, device.getAddress());
 	      addProperty(returnObj, keyName, device.getName());
 
@@ -1428,6 +1467,7 @@ public class BluetoothLePlugin extends CordovaPlugin
         }
         
         JSONObject returnObj = new JSONObject();
+        addProperty(returnObj, keyCode, "1");
         addProperty(returnObj, keyStatus, statusDisconnected);
         addProperty(returnObj, keyAddress, device.getAddress());
         addProperty(returnObj, keyName, device.getName());
@@ -1466,7 +1506,8 @@ public class BluetoothLePlugin extends CordovaPlugin
       //Else it failed
       else
       {
-      	addProperty(returnObj, keyError, errorDiscover);
+      	addProperty(returnObj, keyCode, "1");
+        addProperty(returnObj, keyError, errorDiscover);
 	      addProperty(returnObj, keyMessage, logDiscoveryFail);
 	      discoverCallbackContext.error(returnObj);
       }
@@ -1495,14 +1536,16 @@ public class BluetoothLePlugin extends CordovaPlugin
       //If successfully read, return value
       if (status == BluetoothGatt.GATT_SUCCESS)
       {
-	      addProperty(returnObj, keyStatus, statusRead);
+	      addProperty(returnObj, keyCode, "1");
+        addProperty(returnObj, keyStatus, statusRead);
 	      addPropertyBytes(returnObj, keyValue, characteristic.getValue());
 	      callbackContext.success(returnObj);
       }
       //Else it failed
       else
       {
-      	addProperty(returnObj, keyError, errorRead);
+      	addProperty(returnObj, keyCode, "1");
+        addProperty(returnObj, keyError, errorRead);
 	      addProperty(returnObj, keyMessage, logReadFailReturn);
 	      callbackContext.error(returnObj);
       }
@@ -1527,6 +1570,7 @@ public class BluetoothLePlugin extends CordovaPlugin
       JSONObject returnObj = new JSONObject();
       addProperty(returnObj, keyServiceUuid, formatUuid(characteristic.getService().getUuid()));
       addProperty(returnObj, keyCharacteristicUuid, formatUuid(characteristicUuid));   
+      addProperty(returnObj, keyCode, "1");
       addProperty(returnObj, keyStatus, statusSubscribedResult);
       addPropertyBytes(returnObj, keyValue, characteristic.getValue());
 
@@ -1556,6 +1600,7 @@ public class BluetoothLePlugin extends CordovaPlugin
       //If write was successful, return the written value
       if (status == BluetoothGatt.GATT_SUCCESS)
       {
+        addProperty(returnObj, keyCode, "1");
         addProperty(returnObj, keyStatus, statusWritten);
         addPropertyBytes(returnObj, keyValue, characteristic.getValue());
         callbackContext.success(returnObj);
@@ -1563,7 +1608,8 @@ public class BluetoothLePlugin extends CordovaPlugin
       //Else it failed
       else
       {
-      	addProperty(returnObj, keyError, errorWrite);
+      	addProperty(returnObj, keyCode, "1");
+        addProperty(returnObj, keyError, errorWrite);
         addProperty(returnObj, keyMessage, logWriteFailReturn);
         callbackContext.error(returnObj);
       }
@@ -1592,6 +1638,7 @@ public class BluetoothLePlugin extends CordovaPlugin
       //If descriptor was successful, return the written value
       if (status == BluetoothGatt.GATT_SUCCESS)
       {
+        addProperty(returnObj, keyCode, "1");
         addProperty(returnObj, keyStatus, statusReadDescriptor);
         addPropertyBytes(returnObj, keyValue, descriptor.getValue());
         descriptorCallbackContext.success(returnObj);
@@ -1599,7 +1646,8 @@ public class BluetoothLePlugin extends CordovaPlugin
       //Else it failed
       else
       {
-      	addProperty(returnObj, keyError, errorReadDescriptor);
+      	addProperty(returnObj, keyCode, "1");
+        addProperty(returnObj, keyError, errorReadDescriptor);
         addProperty(returnObj, keyMessage, logReadDescriptorFailReturn);
         descriptorCallbackContext.error(returnObj);
       }
@@ -1634,7 +1682,8 @@ public class BluetoothLePlugin extends CordovaPlugin
           }
           
       		//Get the unsubscribed operation callback and clear
-      		addProperty(returnObj, keyStatus, statusUnsubscribed);
+      		addProperty(returnObj, keyCode, "1");
+          addProperty(returnObj, keyStatus, statusUnsubscribed);
       		
       		callbackContext.success(returnObj);
       	}
@@ -1648,7 +1697,8 @@ public class BluetoothLePlugin extends CordovaPlugin
             return;
           }
           
-      		addProperty(returnObj, keyStatus, statusSubscribed);
+      		addProperty(returnObj, keyCode, "1");
+          addProperty(returnObj, keyStatus, statusSubscribed);
       	  
       	  PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, returnObj);
       	  pluginResult.setKeepCallback(true);
@@ -1669,14 +1719,16 @@ public class BluetoothLePlugin extends CordovaPlugin
 			//If descriptor was written, return written value
       if (status == BluetoothGatt.GATT_SUCCESS)
       {
-      	addProperty(returnObj, keyStatus, statusWrittenDescriptor);
+      	addProperty(returnObj, keyCode, "1");
+        addProperty(returnObj, keyStatus, statusWrittenDescriptor);
       	addPropertyBytes(returnObj, keyValue, descriptor.getValue());
       	descriptorCallbackContext.success(returnObj);
       }
       //Else it failed
       else
       {
-      	addProperty(returnObj, keyError, errorWriteDescriptor);
+      	addProperty(returnObj, keyCode, "1");
+        addProperty(returnObj, keyError, errorWriteDescriptor);
         addProperty(returnObj, keyMessage, logWriteDescriptorFailReturn);
         descriptorCallbackContext.error(returnObj);
       }
@@ -1699,6 +1751,7 @@ public class BluetoothLePlugin extends CordovaPlugin
       //If successfully read RSSI, return value
       if (status == BluetoothGatt.GATT_SUCCESS)
       {
+        addProperty(returnObj, keyCode, "1");
         addProperty(returnObj, keyStatus, statusRssi);
         addProperty(returnObj, keyRssi, rssi);
         rssiCallbackContext.success(returnObj);
@@ -1706,7 +1759,8 @@ public class BluetoothLePlugin extends CordovaPlugin
       //Else it failed
       else
       {
-      	addProperty(returnObj, keyError, errorRssi);
+      	addProperty(returnObj, keyCode, "1");
+        addProperty(returnObj, keyError, errorRssi);
 	      addProperty(returnObj, keyMessage, logRssiFailReturn);
 	      rssiCallbackContext.error(returnObj);
       }
@@ -1894,7 +1948,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     {
 	    JSONObject returnObj = new JSONObject();
 	    
-	    addProperty(returnObj, keyError, errorInitialize);
+	    addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorInitialize);
 	    addProperty(returnObj, keyMessage, logNotInit);
 	    
 	    callbackContext.error(returnObj);
@@ -1911,7 +1966,8 @@ public class BluetoothLePlugin extends CordovaPlugin
   	{
   		JSONObject returnObj = new JSONObject();
 	    
-	    addProperty(returnObj, keyError, errorEnable);
+	    addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorEnable);
 	    addProperty(returnObj, keyMessage, logNotEnabled);
 	    
 	    callbackContext.error(returnObj);
@@ -1931,6 +1987,7 @@ public class BluetoothLePlugin extends CordovaPlugin
   	
     JSONObject returnObj = new JSONObject();
     
+    addProperty(returnObj, keyCode, "1");
     addProperty(returnObj, keyError, errorArguments);
     addProperty(returnObj, keyMessage, logNoArgObj);
     
@@ -1948,7 +2005,8 @@ public class BluetoothLePlugin extends CordovaPlugin
   	
   	JSONObject returnObj = new JSONObject();
   	
-  	addProperty(returnObj, keyError, errorService);
+  	addProperty(returnObj, keyCode, "1");
+    addProperty(returnObj, keyError, errorService);
   	addProperty(returnObj, keyMessage, logNoService);
     
     callbackContext.error(returnObj);
@@ -1965,7 +2023,8 @@ public class BluetoothLePlugin extends CordovaPlugin
   	
   	JSONObject returnObj = new JSONObject();
   	
-  	addProperty(returnObj, keyError, errorCharacteristic);
+  	addProperty(returnObj, keyCode, "1");
+    addProperty(returnObj, keyError, errorCharacteristic);
   	addProperty(returnObj, keyMessage, logNoCharacteristic);
     
     callbackContext.error(returnObj);
@@ -1982,7 +2041,8 @@ public class BluetoothLePlugin extends CordovaPlugin
   	
   	JSONObject returnObj = new JSONObject();
   	
-  	addProperty(returnObj, keyError, errorDescriptor);
+  	addProperty(returnObj, keyCode, "1");
+    addProperty(returnObj, keyError, errorDescriptor);
   	addProperty(returnObj, keyMessage, logNoDescriptor);
     
     callbackContext.error(returnObj);
@@ -2001,7 +2061,8 @@ public class BluetoothLePlugin extends CordovaPlugin
   	
   	JSONObject returnObj = new JSONObject();
   	
-  	addProperty(returnObj, keyError, errorIsNotDisconnected);
+  	addProperty(returnObj, keyCode, "1");
+    addProperty(returnObj, keyError, errorIsNotDisconnected);
   	addProperty(returnObj, keyMessage, logIsNotDisconnected);
     
     callbackContext.error(returnObj);
@@ -2020,7 +2081,8 @@ public class BluetoothLePlugin extends CordovaPlugin
   	
   	JSONObject returnObj = new JSONObject();
   	
-  	addProperty(returnObj, keyError, errorIsDisconnected);
+  	addProperty(returnObj, keyCode, "1");
+    addProperty(returnObj, keyError, errorIsDisconnected);
   	addProperty(returnObj, keyMessage, logIsDisconnected);
     
     callbackContext.error(returnObj);
@@ -2039,7 +2101,8 @@ public class BluetoothLePlugin extends CordovaPlugin
   	
   	JSONObject returnObj = new JSONObject();
   	
-  	addProperty(returnObj, keyError, errorIsNotConnected);
+  	addProperty(returnObj, keyCode, "1");
+    addProperty(returnObj, keyError, errorIsNotConnected);
   	addProperty(returnObj, keyMessage, logIsNotConnected);
     
     callbackContext.error(returnObj);
@@ -2059,7 +2122,8 @@ public class BluetoothLePlugin extends CordovaPlugin
     {
 	    JSONObject returnObj = new JSONObject();
 	  	
-	  	addProperty(returnObj, keyError, errorNeverConnected);
+	  	addProperty(returnObj, keyCode, "1");
+      addProperty(returnObj, keyError, errorNeverConnected);
 	  	addProperty(returnObj, keyMessage, logNeverConnected);
 	    
 	    callbackContext.error(returnObj);
