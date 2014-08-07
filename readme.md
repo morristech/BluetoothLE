@@ -1,4 +1,12 @@
 Bluetooth LE PhoneGap Plugin
+### A fork of github.com/randdusing/BluetoothLE
+
+====================
+
+## Differences from original plugin ##
+
+* Return Error codes for querying responses and better options for platform agnostic localization
+* Toggle for write() parameter to query if BT should write with response or not in iOS. bluetoothle.write(..., ..., {'withRepsonse': true || false})
 
 ====================
 
@@ -9,6 +17,8 @@ Bluetooth LE PhoneGap Plugin
 * iOS 7 or higher
 * Device hardware must be certified for Bluetooth LE. i.e. Nexus 7 (2012) doesn't support Bluetooth LE even after upgrading to 4.3 (or higher) without a modification
 * List of devices: http://www.bluetooth.com/Pages/Bluetooth-Smart-Devices-List.aspx
+
+
 
 
 ## Limitations / Issues ##

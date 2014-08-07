@@ -730,8 +730,15 @@ NSString *const operationWrite = @"write";
     }
     
     [self addCallback:characteristic.UUID forOperationType:operationWrite forCallback:command.callbackId];
+
+    bool responseType = [obj valueForKey:@"withResponse"] == nil ? true : [[obj valueForKey:@"withResponse"] boolValue];
     
-    [activePeripheral writeValue:value forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+    if(responseType){
+        [activePeripheral writeValue:value forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+    }
+    else{
+        [activePeripheral writeValue:value forCharacteristic:characteristic type:CBCharacteristicWriteWithoutResponse];
+    }
 }
 
 - (void)readDescriptor:(CDVInvokedUrlCommand *)command
